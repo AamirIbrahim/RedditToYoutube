@@ -1,8 +1,9 @@
 name: Daily Reddit to YouTube
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight
+  workflow_dispatch:
+  # schedule:
+    # - cron: '0 0 * * *'  # Runs daily at midnight
 
 jobs:
   build:
@@ -11,13 +12,13 @@ jobs:
     env:
       SUBREDDIT_MAPPING: |
         {
-          "Monday": "",
-          "Tuesday": "",
-          "Wednesday": "",
-          "Thursday": "",
-          "Friday": "",
-          "Saturday": "",
-          "Sunday": ""
+          "Monday": ${{ secrets.MONDAY_SUBREDDIT }},
+          "Tuesday": ${{ secrets.TUESDAY_SUBREDDIT }},
+          "Wednesday": ${{ secrets.WEDNESDAY_SUBREDDIT }},
+          "Thursday": ${{ secrets.THURSDAY_SUBREDDIT }},
+          "Friday": ${{ secrets.FRIDAY_SUBREDDIT }},
+          "Saturday": ${{ secrets.SATURDAY_SUBREDDIT }},
+          "Sunday": ${{ secrets.SUNDAY_SUBREDDIT }}
         }
 
     steps:

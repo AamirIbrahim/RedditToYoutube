@@ -99,7 +99,6 @@ def add_text_overlay(input_video, title, author, output_video):
     return final_video
 
 def is_audio_silent(audio_path, silence_threshold=-40.0):
-    print(audio_path)
     """Checks if an audio file is silent (all sound below threshold)."""
     audio = AudioSegment.from_file(audio_path, "mp4")
     samples = np.array(audio.get_array_of_samples())  # Convert to NumPy array
