@@ -1,0 +1,59 @@
+name: Daily Reddit to YouTube
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      SUBREDDIT_MAPPING: |
+        {
+          "Monday": "",
+          "Tuesday": "",
+          "Wednesday": "",
+          "Thursday": "",
+          "Friday": "",
+          "Saturday": "",
+          "Sunday": ""
+        }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine subreddit for the day
+        id: set_subreddit
+        run: |
+          import json
+          import datetime
+
+          # Load the subreddit mapping from the environment
+          mapping = json.loads('${{ env.SUBREDDIT_MAPPING }}')
+          day_of_week = datetime.datetime.now().strftime('%A')  # Get the current day (e.g., "Monday")
+          subreddit = mapping.get(day_of_week, "default_subreddit")  # Fallback to a default subreddit if not found
+
+          # Output the subreddit as an environment variable
+          print(f"::set-output name=subreddit::{subreddit}")
+        env:
+          SUBREDDIT_MAPPING: ${{ env.SUBREDDIT_MAPPING }}
+
+      - name: Run script
+        env:
+          SUBREDDIT: ${{ steps.set_subreddit.outputs.subreddit }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          USER_AGENT: ${{ secrets.USER_AGENT }}
+          CLIENT_SECRETS_FILE: ${{ secrets.CLIENT_SECRETS_FILE }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+        run: python main.py
